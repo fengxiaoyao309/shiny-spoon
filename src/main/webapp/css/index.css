@@ -1,0 +1,173 @@
+* {
+	padding: 0px;
+}
+
+ul {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+}
+
+body {
+	width: 100%;
+	margin: 0 auto;
+}
+
+.head {
+	width: 100%;
+	height: 50px;
+	background-color: orange;
+}
+
+.head p {
+	margin: 0 auto;
+	float: left;
+	line-height: 50px;
+	padding-left: 5%;
+	color: white;
+	font-weight: bold;
+	font-size: 20px;
+}
+
+.head_right {
+		margin: 0 auto;
+	float: right;
+	margin-right: 5%;
+}
+
+.head_right li {
+	float: left;
+	line-height: 50px;
+	text-align: center;
+	width: 100px;
+}
+
+.head_right li a:hover {
+	color: gray;
+}
+
+.article {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	margin-top: 10px;
+}
+
+.article_left {
+	flex: 1;
+	margin-top: -10px;
+}
+.left_nav{
+	width: 100%;
+}
+.article_left li {
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	border-bottom: 1px solid white;
+	background-color: orange;
+}
+
+.article_left li>a {
+	display: block;
+	height: 100%;
+	width: 100%;
+	color: white;
+}
+
+.article_left a.select {
+	background-color: blanchedalmond;
+	color: red;
+}
+
+.article_right {
+	flex: 6;
+}
+.p_list{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	margin: 0;
+}
+.p_list li{
+	width: 20%;
+	text-align: center;
+	margin-bottom: 10px;
+}
+.p_list li img{
+	width: 90%;
+	height: 200px;
+}
+.p_name{
+	color: orange;
+	margin: 0px;
+	font-size: 16px;
+	white-space: nowrap; /* 确保文本在一行内显示 */
+    overflow: hidden; /* 隐藏超出容器的文本 */
+    text-overflow: ellipsis; /* 使用省略号表示被截断的文本 */
+}
+.p_info{
+	width: 90%;
+	margin: 0px;
+	line-height:30px;
+}
+/* 价格全局样式 */
+.price {
+	float: left;
+	padding-left: 20px;
+	color: #e64340;
+	font-weight: bold;
+}
+
+/* 价格前面的人民币符号 */
+.price::before {
+	content: '\00A5';
+	padding-right: 2px;
+	padding-left: 5px;
+}
+.cart{
+	float: right;
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: url(../images/cart.png)  no-repeat center center;
+	background-image: 30px 30px;
+	background-size: 30px 30px;
+}
+.page{
+	width: 100%;
+	height: 30px;
+}
+.page ul{
+	float: right;
+	width: 50%;
+}
+.page ul li{
+	float: left;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	background-color: orange;
+	margin-right: 10px;
+}
+.page ul li a{
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+}
+.foot {
+	margin: 0 auto;
+	font-size: 12px;
+	text-align: center;
+	line-height: 60px;
+	margin-top: 20px;
+	background-color: gainsboro;
+}

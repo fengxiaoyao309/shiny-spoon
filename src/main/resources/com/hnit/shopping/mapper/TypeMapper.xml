@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hnit.shopping.mapper.TypeMapper">
+ 
+ 	<!-- int add(Type type);-->
+	<insert id="add" parameterType="type">
+	insert into tb_type values(null,#{tname},1)
+	</insert>
+	
+	<!--  List<Type> findAll();-->
+	<select id="findAll" resultType="type">
+	select tno, tname, state from tb_type where state = 1
+	</select>
+  
+</mapper>

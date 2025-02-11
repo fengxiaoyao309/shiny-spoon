@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hnit.shopping.mapper.ProductMapper">
+ <!-- 这个元素可以用来定义可重用的SQL代码片段，以便在其他语句中使用 -->
+ <sql id="productColumn">pno, tno, pname, price, salePrice, unit,
+ 		weight, pics, balance, mark, state, pro_temp </sql>
+	<insert id="add">
+		insert into tb_product (
+			<include refid="productColumn"></include> )
+		values(null, #{tno}, #{pname}, #{price}, #{salePrice}, #{unit}, #{weight},
+	#{pics}, #{balance}, #{mark}, 1, #{pro_temp})
+</insert>
+
+
+<!--List<Product> finds(Product product);-->
+	<select id="finds" resultType="product">
+    select
+    
+    
+    <include refid="productColumn"></include>
+    from tb_product
+    
+    <where>
+			<if test = "pno!=null">
+				and pno = #{pno}
+			</if>
+			<if test = "tno!=null">
+				and tno = #{tno}
+			</if>
+			<!-- _parameter mybatis内置参数 -->
+			<if test = "pname !=null and ''!=pname ">
+			<bind name="_pname" value="'%' + _parameter.getPname()+ '%'" />
+				and pname like #{_pname}
+			</if>
+		</where>
+		order by pno desc
+	</select>
+	
+<!--List<Product> findPage(Map<String, Object> map); 分页 start, rows-->
+	<select id="findPage" resultType="product">
+	    SELECT pno, tno, pname, price, salePrice, unit, weight, pics, balance, mark, state, pro_temp
+	    FROM tb_product
+	    <where>
+	        <if test="pno != null">
+	            AND pno = #{pno}
+	        </if>
+	        <if test="tno != null">
+	            AND tno = #{tno}
+	        </if>
+	        <if test="pname != null and pname != ''">
+	            AND pname LIKE CONCAT('%', #{pname}, '%') <!-- 建议使用通配符 -->
+	        </if>
+	    </where>
+	    ORDER BY pno DESC
+	    <if test="start != null and rows != null">
+	        LIMIT #{start}, #{rows}
+	    </if>
+	</select>
+	
+<!--int total(Map<String, Object> map);-->
+	<select id="total" resultType="int">
+	    SELECT COUNT(*)
+	    FROM tb_product
+	    <where>
+	        <if test="pno != null">
+	            AND pno = #{pno}
+	        </if>
+	        <if test="tno != null">
+	            AND tno = #{tno}
+	        </if>
+	        <if test="pname != null and pname != ''">
+	            AND pname LIKE CONCAT('%', #{pname}, '%') <!-- 建议使用通配符 -->
+	        </if>
+	    </where>
+</select>
+</mapper>

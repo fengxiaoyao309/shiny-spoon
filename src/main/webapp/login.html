@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>君之源餐厅用户登录</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #00ff75, #3700ff);
+        }
+        
+        .artistic-text {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 24px;
+            font-family: 'KaiTi', sans-serif;
+            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        #login-container {
+            width: 400px;
+            padding: 20px;
+            background-color: #171717;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        #login-container img {
+            width: 100%;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            color: rgb(0, 255, 200);
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid blue;
+            color: rgb(0, 255, 200);
+            background-color: #171717;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        input[type="button"] {
+            width: 48%;
+            height: 40px;
+            border: none;
+            outline: none;
+            background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+            color: rgb(0, 0, 0);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="button"]:hover {
+            background-image: linear-gradient(163deg, #00642f 0%, #13034b 100%);
+            color: rgb(0, 255, 200);
+        }
+    </style>
+</head>
+<body>
+   <div id="login-container">
+    <div class="artistic-text">君之源线上餐厅</div>
+    <img src="images/bg.jpeg" />
+    <form>
+        <label>用户名:</label>
+        <input type="text" name="nickName" placeholder="请输入用户名或手机号" />
+        <label>密码:</label>
+        <input type="password" name="password" placeholder="请输入密码" />
+        <div class="button-container">
+            <input type="button" value="登录" id="btn_login" />
+            <input type="button" value="注册" id="btn_register" />
+        </div>
+    </form>
+</div>
+
+   <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+    $(function () {
+        // 登录按钮绑定点击事件
+        $("#btn_login").click(function () {
+            var nickName = $('input[name="nickName"]').val();
+            var password = $('input[name="password"]').val();
+            
+            // 添加表单验证
+            if (!nickName || !password) {
+                alert("用户名和密码不能为空！");
+                return;
+            }
+            
+            $.post("member/login", { 
+                "nickName": nickName, 
+                "password": password 
+            }, function (data) {
+                if (data.code == 200) {
+                    // 登录成功，存储用户信息
+                    localStorage.setItem('nickName', nickName);
+                    // 如果后端返回了用户其他信息，也可以存储
+                    if (data.data) {
+                        localStorage.setItem('userInfo', JSON.stringify(data.data));
+                    }
+                    
+                    console.log("登录成功，已存储用户信息：", nickName); // 调试日志
+                    window.location.href = "index.html";
+                } else {
+                    alert(data.msg);
+                }
+            }, "json")
+            .fail(function(xhr, status, error) {
+                console.log("登录请求失败：", error); // 调试日志
+                alert("登录失败，请稍后重试");
+            });
+        });
+
+        // 注册按钮绑定点击事件
+        $("#btn_register").click(function () {
+            window.location.href = "register.html";
+        });
+        
+        // 检查是否已登录
+        const savedNickName = localStorage.getItem('nickName');
+        if (savedNickName) {
+            console.log("检测到已登录用户：", savedNickName); // 调试日志
+        }
+    });
+    
+    // 添加登出函数
+    function logout() {
+        localStorage.removeItem('nickName');
+        localStorage.removeItem('userInfo');
+        console.log("用户已登出"); // 调试日志
+        window.location.href = "login.html";
+    }
+</script>
+</body>
+</html>

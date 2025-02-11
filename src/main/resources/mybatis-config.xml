@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<!-- 属性配置 -->
+  <properties resource="db.properties"></properties>
+  <!-- settings配置 -->
+  <settings>
+  	<!-- 是否开启驼峰命名自动映射，即从经典数据库列名 A_COLUMN 映射到经典 Java 属性名 aColumn。 -->
+  	<setting name="mapUnderscoreToCamelCase" value="true"/>
+  </settings>
+  
+  <!-- 也可以指定一个包名，MyBatis会在包名下面搜索需要的 Java Bean
+	会使用 Bean 的首字母小写的非限定类名来作为它的别名-->
+	<typeAliases>
+		<package name="com.hnit.shopping.entity"/>
+	</typeAliases>
+
+  <environments default="development">
+  <!-- 数据源配置 -->
+    <environment id="development">
+      <transactionManager type="JDBC"/>
+      <dataSource type="POOLED">
+        <property name="driver" value="${driverName}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${user}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  
+ 	<!-- 
+	    MvBatis 可以根据不同的数据库厂商执行不同的语句，这种多厂商的支持是基于
+		映射语句中的databaseId 属性。MyBatis会加载带有匹配当前数据库
+		databaseId属性和所有不带 databaseId属性的语句。
+ 	-->
+    <databaseIdProvider type="DB_VENDOR">
+    	<property name="SQL Server" value="sqlserver"/>
+    	<property name="MySQL" value="mysql"/>
+    	<property name="Oracle" value="oracle"/>
+    </databaseIdProvider>
+  <mappers>
+  
+	<!-- 映射文件的配置 -->
+	    <!-- <mapper resource="com/hnit/shopping/mapper/MemberMapper.xml"/>
+	     <mapper resource="com/hnit/shopping/mapper/AdminMapper.xml"/>
+	    -->
+	<!-- 将包内的映射器接口全部注册为映射器 -->
+	<package name="com.hnit.shopping.mapper"/>
+  </mappers>
+</configuration>

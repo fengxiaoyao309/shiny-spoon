@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        section {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+        }
+
+        section.color {
+            position: absolute;
+            filter: blur(200px);
+        }
+
+        section.color:nth-child(1) {
+            top: -350px;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        section.color:nth-child(2) {
+            bottom: -150px;
+            left: 100px;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        section.color:nth-child(3) {
+            bottom: 50px;
+            right: 100px;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .box {
+            position: relative;
+        }
+
+        .box.circle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            filter: hue-rotate(calc(var(--x) * 70deg));
+            animation: animate 10s linear infinite;
+            animation-delay: calc(var(--x) * -1s);
+        }
+
+        @keyframes animate {
+            0%,
+            100% {
+                transform: translateY(-50px);
+            }
+
+            50% {
+                transform: translateY(50px);
+            }
+        }
+
+        .box.circle:nth-child(1) {
+            top: -50px;
+            right: -60px;
+            width: 100px;
+            height: 100px;
+        }
+
+        .box.circle:nth-child(2) {
+            top: 150px;
+            left: -100px;
+            width: 120px;
+            height: 120px;
+            z-index: 2;
+        }
+
+        .box.circle:nth-child(3) {
+            bottom: 50px;
+            right: -60px;
+            width: 80px;
+            height: 80px;
+            z-index: 2;
+        }
+
+        .box.circle:nth-child(4) {
+            bottom: -80px;
+            left: 100px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .box.circle:nth-child(5) {
+            top: -80px;
+            left: 140px;
+            width: 60px;
+            height: 60px;
+        }
+
+        .conMain {
+            position: relative;
+            width: 400px;
+            min-height: 400px;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .form {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+        }
+
+        .form h2 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form h2::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            width: 0px;
+            height: 3px;
+            background: #fff;
+            transition: 0.5s;
+        }
+
+        .form h2:hover:before {
+            width: 60px;
+        }
+
+        .form .inputBox {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .form .inputBox input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s;
+        }
+
+        .form .inputBox input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form .inputBox input[type="submit"] {
+            background: #fff;
+            color: #666;
+            max-width: 100px;
+            margin: 20px auto;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 30px;
+            padding: 12px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .form .inputBox input[type="submit"]:hover {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .forget {
+            margin-top: 6px;
+            color: #fff;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .forget a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+    </style>
+    <title>登录页面</title>
+</head>
+<body>
+    <section>
+        <div class="color"></div>
+        <div class="color"></div>
+        <div class="color"></div>
+        <div class="box">
+            <div class="circle" style="--x:0"></div>
+            <div class="circle" style="--x:1"></div>
+            <div class="circle" style="--x:2"></div>
+            <div class="circle" style="--x:3"></div>
+            <div class="circle" style="--x:4"></div>
+            <div class="conMain">
+                <div class="form">
+                    <h2>维维餐厅用户登录</h2>
+                    <!-- 修改form部分 -->
+                    <form id="loginForm">
+                        <div class="inputBox">
+                            <input type="text" name="nickName" placeholder="姓名" required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="password" name="password" placeholder="密码" required>
+                        </div>
+                        <div class="inputBox">
+                            <!-- 修改为button类型 -->
+                            <input type="button" value="登录" id="btn_login">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 添加jQuery引用 -->
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 登录按钮点击事件
+            $("#btn_login").click(function () {
+                var nickName = $('input[name="nickName"]').val();
+                var password = $('input[name="password"]').val();
+                
+                // 表单验证
+                if (!nickName || !password) {
+                    alert("用户名和密码不能为空！");
+                    return;
+                }
+                
+                // 发送登录请求
+                $.post("member/login", { 
+                    "nickName": nickName, 
+                    "password": password 
+                }, function (data) {
+                    if (data.code == 200) {
+                        // 登录成功，存储用户信息
+                        localStorage.setItem('nickName', nickName);
+                        if (data.data) {
+                            localStorage.setItem('userInfo', JSON.stringify(data.data));
+                        }
+                        
+                        console.log("登录成功，已存储用户信息：", nickName);
+                        // 登录成功后跳转到index.html
+                        window.location.href = "index.html";
+                    } else {
+                        alert(data.msg);
+                    }
+                }, "json")
+                .fail(function(xhr, status, error) {
+                    console.log("登录请求失败：", error);
+                    alert("登录失败，请稍后重试");
+                });
+            });
+
+            // 检查是否已登录，但不自动重定向
+            const savedNickName = localStorage.getItem('nickName');
+            if (savedNickName) {
+                console.log("检测到已登录用户：", savedNickName);
+            }
+        });
+
+        // 登出函数
+        function logout() {
+            localStorage.removeItem('nickName');
+            localStorage.removeItem('userInfo');
+            console.log("用户已登出");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

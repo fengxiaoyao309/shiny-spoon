@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息 - 君之源餐厅</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+    <style>
+        .user-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .user-info {
+            margin: 20px 0;
+        }
+        .user-info p {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        .user-info label {
+            font-weight: bold;
+            width: 100px;
+        }
+        .user-info span {
+            flex: 1;
+            color: #666;
+        }
+        .back-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .back-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="user-container">
+        <h2>用户信息</h2>
+        <div class="user-info">
+            <p>
+                <label>用户名：</label>
+                <span id="username"></span>
+            </p>
+            <p>
+                <label>手机号：</label>
+                <span id="phone"></span>
+            </p>
+            <p>
+                <label>性别：</label>
+                <span id="gender"></span>
+            </p>
+            <p>
+                <label>注册时间：</label>
+                <span id="registerTime"></span>
+            </p>
+        </div>
+        <a href="index.html" class="back-btn">返回首页</a>
+    </div>
+
+    <script src="js/jquery-1.9.1.js"></script>
+    <script>
+    $(document).ready(function() {
+        const nickName = localStorage.getItem('nickName');
+        console.log("当前用户：", nickName); // 调试日志
+        
+        if (!nickName) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // 获取用户信息
+        $.ajax({
+            url: 'member/info',
+            method: 'GET',
+            data: { nickName: nickName },
+            success: function(response) {
+                console.log("获取到的用户信息：", response); // 调试日志
+                if (response.code === 200) {
+                    const userInfo = response.data;
+                    $('#username').text(userInfo.nickName || nickName);
+                    $('#phone').text(userInfo.tel || '未设置');
+                    $('#gender').text(userInfo.sex || '未设置');
+                    // 如果有注册时间字段，可以在这里添加
+                    $('#registerTime').text(formatDate(userInfo.registerTime) || '未设置');
+                } else {
+                    alert('获取用户信息失败：' + response.msg);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log("请求失败：", error); // 调试日志
+                alert('网络错误，请稍后重试');
+            }
+        });
+    });
+
+    // 格式化日期
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.getFullYear() + '-' + 
+               padZero(date.getMonth() + 1) + '-' + 
+               padZero(date.getDate()) + ' ' +
+               padZero(date.getHours()) + ':' +
+               padZero(date.getMinutes());
+    }
+
+    function padZero(num) {
+        return num < 10 ? '0' + num : num;
+    }
+    </script>
+</body>
+</html>

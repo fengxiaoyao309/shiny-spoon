@@ -1,0 +1,72 @@
+点餐系统（外卖）：
+  管理员tb_admin：
+     a_id 
+     a_name
+    a_pwd
+    a_role   角色 （超级管理员  普通管理员）
+    a_state  状态  1 可用  0 冻结
+
+ 会员tb_member:
+    mno
+    nickName
+    sex
+    password
+    tel 
+    mpic 图片
+    state  状态 1 可用  0 冻结
+    temp01  备用字段
+ 商品类型 tb_type
+     tno
+     tname
+     state 1上架   0  下架
+商品信息 tb_product 
+    pno
+    tno
+    pname
+    unit  
+    price 
+    salePrice
+    weight 
+    balance 库存
+    pics
+    mark 描述信息 
+    state  1上架   0  下架
+    pro_temp 备用字段
+
+购物车 tb_cart
+   cno
+   mno 会员号
+   pno 商品编号
+   num   数量 
+
+  
+
+
+地址表tb_address:
+   aid 
+    mno 
+   收货人 mname
+   电话  tel
+   地址 addr
+   state  1可用 0禁用 
+   flag   1 默认地址    
+  
+订单表： tb_order
+  ono
+  mno
+  totalprice
+  order_date
+   pay_date
+  finish_date 
+  aid 
+订单详情表tb_order_item:
+        iid 
+        ono
+        pno
+        num 
+        price  
+	
+
+      
+
+

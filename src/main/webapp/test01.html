@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #282c34;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: "微软雅黑", sans-serif;
+        }
+        .color {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+        .box {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row; /* 让子元素横向排列 */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        }
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            animation: animate 20s linear infinite;
+        }
+        @keyframes animate {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.5); }
+        }
+        .conMain {
+            width: 400px;
+            min-height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 30px;
+            border-radius: 15px;
+            position: relative; /* 使得图片可以绝对定位 */
+        }
+        .form {
+            width: 100%;
+        }
+        .form h2 {
+            color: #fff;
+            font-size: 28px; /* 增加标题字体大小 */
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 20px; /* 减少标题与输入框之间的间距 */
+            text-align: center;
+        }
+        .inputBox {
+            width: 100%;
+            margin-top: 15px; /* 增加输入框之间的间距 */
+        }
+        .inputBox input {
+            width: 100%;
+            padding: 12px 20px; /* 增加内边距 */
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            border: none;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: border 0.3s;
+        }
+        .inputBox input::placeholder {
+            color: #fff;
+        }
+        .inputBox input[type="submit"] {
+            background: #fff;
+            color: #666;
+            max-width: 100px;
+            margin: 20px auto 0; /* 增加按钮与其他元素的间距 */
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: background 0.3s, transform 0.3s; /* 增加变换效果 */
+        }
+        .inputBox input[type="submit"]:hover {
+            background: #f0f0f0;
+            transform: scale(1.05); /* 悬停时放大效果 */
+        }
+        .forget {
+            margin-top: 10px; /* 增加忘记密码和注册链接的间距 */
+            color: #fff;
+            text-align: center;
+        }
+        .forget a {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .imageContainer {
+            margin-left: 20px; /* 图片与登录框之间的间距 */
+        }
+        .imageContainer img {
+            width: 300px; /* 设置图片宽度为300px */
+            height: auto; /* 自适应高度 */
+            border-radius: 10px; /* 可选：圆角效果 */
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div class="color"></div>
+        <div class="box">
+            <div class="conMain">
+                <div class="form">
+                    <h2>某某餐厅用户登录</h2>
+                    <form id="testLoginForm">
+                        <div class="inputBox">
+                            <input type="text" name="nickName" placeholder="姓名" required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="password" name="password" placeholder="密码" required>
+                        </div>
+                        <div class="inputBox">
+                            <input type="button" value="登录" id="btn_test_login">
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 登录按钮点击事件
+            $("#btn_test_login").click(function () {
+                var nickName = $('input[name="nickName"]').val();
+                var password = $('input[name="password"]').val();
+                
+                // 表单验证
+                if (!nickName || !password) {
+                    alert("用户名和密码不能为空！");
+                    return;
+                }
+                
+                // 发送登录请求
+                $.post("member/login", { 
+                    "nickName": nickName, 
+                    "password": password 
+                }, function (data) {
+                    if (data.code == 200) {
+                        // 登录成功，存储用户信息
+                        localStorage.setItem('nickName', nickName);
+                        if (data.data) {
+                            localStorage.setItem('userInfo', JSON.stringify(data.data));
+                        }
+                        
+                        console.log("登录成功，已存储用户信息：", nickName);
+                        // 登录成功后跳转到index.html
+                        window.location.href = "index.html";
+                    } else {
+                        alert(data.msg);
+                    }
+                }, "json")
+                .fail(function(xhr, status, error) {
+                    console.log("登录请求失败：", error);
+                    alert("登录失败，请稍后重试");
+                });
+            });
+
+            // 移除自动重定向的检查，这样用户可以随时访问test01.html
+            // const savedNickName = localStorage.getItem('nickName');
+            // if (savedNickName) {
+            //     window.location.href = "index.html";
+            // }
+        });
+    </script>
+</body>
+</html>

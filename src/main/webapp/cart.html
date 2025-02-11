@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车 - 君之源餐厅</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css"/>
+    <script src="js/jquery-1.9.1.js"></script>
+    <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+		}
+		
+		.container {
+		    width: 80%;
+		    max-width: 800px;
+		    margin: 50px auto;
+		    background-color: #fff;
+		    padding: 20px;
+		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		
+		h2 {
+		    text-align: center;
+		    color: #333;
+		}
+		
+		.cart-item {
+		    display: flex;
+		    justify-content: space-between;
+		    align-items: center;
+		    padding: 10px 0;
+		    border-bottom: 1px solid #ddd;
+		}
+		
+		.item-details {
+		    display: flex;
+		    align-items: center;
+		}
+		
+		.item-name {
+		    margin-right: 20px;
+		    font-weight: bold;
+		    color: #555;
+		}
+		
+		.quantity {
+		    display: flex;
+		    align-items: center;
+		}
+		
+		.quantity button {
+		    background-color: #007bff;
+		    color: #fff;
+		    border: none;
+		    padding: 5px 10px;
+		    cursor: pointer;
+		    margin: 0 5px;
+		}
+		
+		.quantity input {
+		    width: 40px;
+		    text-align: center;
+		}
+		
+		.item-price {
+		    color: #333;
+		    font-weight: bold;
+		}
+		
+		.remove-btn {
+		    background-color: #dc3545;
+		    color: #fff;
+		    border: none;
+		    padding: 5px 10px;
+		    cursor: pointer;
+		}
+		
+		.total {
+		    text-align: right;
+		    font-size: 18px;
+		    margin-top: 20px;
+		    color: #333;
+		}
+		
+		.checkout-btn {
+		    display: block;
+		    width: 100%;
+		    padding: 10px;
+		    background-color: #28a745;
+		    color: #fff;
+		    border: none;
+		    cursor: pointer;
+		    font-size: 16px;
+		    margin-top: 20px;
+		}
+		
+		.checkout-btn:hover {
+		    background-color: #218838;
+		}
+    
+    </style>
+    
+</head>
+<body>
+	
+    <div class="container">
+        <h2>购物车</h2>
+        <div id="cartItems">
+            <!-- 购物车商品列表将通过JavaScript动态生成 -->
+        </div>
+        <div class="total">
+            总计: ￥<span id="totalPrice">0</span>
+        </div>
+        <button class="checkout-btn" onclick="checkout()">结算</button>
+    </div>
+
+    <script>
+        // 初始化购物车页面
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart();
+        });
+        
+        // 确保在全局作用域中定义
+        window.updateTotal = function() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            let total = 0;
+            cartItems.forEach(item => {
+                total += item.price * item.quantity;
+            });
+            document.getElementById('totalPrice').innerText = total.toFixed(2);
+        };
+        
+        // 添加商品到购物车
+        function addCart(productId) {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartItem = cartItems.find(item => item.id === productId);
+        
+            if (cartItem) {
+                cartItem.quantity++;
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                alert(cartItem.name + ' 的数量已增加！');
+                updateTotal();
+            } else {
+                $.ajax({
+                    url: `/shopping/product/${productId}`,
+                    method: 'GET',
+                    success: function(response) {
+                        const product = response.products.find(p => p.pno === productId);
+                        if (product) {
+                            cartItems.push({
+                                id: product.pno,
+                                name: product.pname, // 添加商品名称
+                                price: product.price,
+                                quantity: 1
+                            });
+                            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                            alert(product.pname + ' 已添加到购物车！');
+                            renderCart(); // 渲染购物车
+                        }
+                    },
+                    error: function() {
+                        alert('无法获取商品信息');
+                    }
+                });
+            }
+        }
+     
+        function renderCart() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartItemsContainer = document.getElementById('cartItems');
+            cartItemsContainer.innerHTML = ''; // 清空容器
+
+            cartItems.forEach(item => {
+                const cartItemHtml = `
+                    <div class="cart-item">
+                        <div class="item-details">
+                            <p class="item-name">${item.name}</p> <!-- 显示商品名称 -->
+                            <div class="quantity">
+                                <button onclick="changeQuantity('decrease', ${item.id})">-</button>
+                                <input type="number" value="${item.quantity}" min="1" id="quantity-${item.id}">
+                                <button onclick="changeQuantity('increase', ${item.id})">+</button>
+                            </div>
+                        </div>
+                        <p class="item-price">￥<span id="price-${item.id}">${item.price}</span></p>
+                        <button class="remove-btn" onclick="removeItem(${item.id})">删除</button>
+                    </div>
+                `;
+                cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHtml);
+            });
+
+            updateTotal();
+        }
+
+        // 修改商品数量
+        function changeQuantity(action, id) {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const item = cartItems.find(item => item.id === id);
+            if (action === 'increase') {
+                item.quantity++;
+            } else if (action === 'decrease' && item.quantity > 1) {
+                item.quantity--;
+            }
+            document.getElementById('quantity-' + id).value = item.quantity;
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            updateTotal();
+        }
+
+        // 删除商品
+        function removeItem(id) {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const index = cartItems.findIndex(item => item.id === id);
+            if (index > -1) {
+                cartItems.splice(index, 1);
+                document.getElementById('cartItems').children[index].remove();
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                updateTotal();
+            }
+        }
+
+        // 结算功能
+        function checkout() {
+            alert('结算成功！');
+            // 在这里可以添加结算逻辑
+        }
+    </script>
+</body>
+</html>

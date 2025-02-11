@@ -1,0 +1,32 @@
+单个参数：mybatis不做任何处理
+	#{参数名}：取出参数值    getById(Integer id)    ==>  id=#{id}或id=#{idabc}也是可以执行成功的
+多个参数：
+	多个参数会被封装成一个map
+	key:param1....paramN或者参数的索引也可以
+	value:插入参数值
+	#{}就是从map中获取指定的key的值
+	org.apache.ibatis.exceptions.PersistenceException: 
+### Error querying database.  Cause: org.apache.ibatis.binding.BindingException: Parameter 'id' not found. Available parameters are [1, 0, param1, param2]
+### Cause: org.apache.ibatis.binding.BindingException: Parameter 'id' not found. Available parameters are [1, 0, param1, param2]
+	操作：
+		方法：public UserInfoBean  getUserIdAndUserName(Integer id,String userName);
+		取值:#{user_id},#{user_name}
+命名参数：明确指定封装参数时map的key,@Param("user_id")
+	多个参数会被封装成一个map
+		key:使用@param注解指定的值
+		value:参数值
+		#{指定的key}取出对应的参数值
+POJO		
+	如果多个参数正好是业务逻辑的数据模型，这样就可以直接传入POJO即可
+	#{属性名}，	取出传入的POJO的属性值
+map:
+	如果多个参数不是业务数据模型的数据，没有对应的POJO，为了方便，我们也可以传入map
+	#{key}	,取出map中的对应值
+To:
+	如果多个参数不是业务模型中的数据，但是经常要使用，推荐编写一个To(Transfer Object)数据传输对象
+	Page{index;
+		int size;
+	}
+ 
+
+

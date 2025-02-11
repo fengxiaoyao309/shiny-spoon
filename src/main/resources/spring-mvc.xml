@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        
+	<context:component-scan base-package="com.hnit.shopping" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RequestMapping"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.GetMapping"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.PostMapping"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RequestParam"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ResponseBody"/>
+		<context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<!-- 
+		原因是 Spring在使用ContextLoadListener加载applicationContext.xml或其他名称的xml文件时，能进行数据源和相关事务注解的检查，
+		启动事务特性。如果是在spring-mvc.xml里面的加载的话，仅作为普通bean定义加载；
+		如果带上事务，那么用annotation方式的事务注解和bean配置，事务会失效，要将service　bean配置到xml文件中才行。
+		 因 为spring的context是父子容器，所以会产生冲突，Controller会先进行扫描装配，而此时的Service还没有进行事务的增强处理， 
+		 得到的将是原样的Service（没有经过事务加强处理，故而没有事务处理能力） ，最后才是applicationContext.xml中的扫描配置进行事务处理。-->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	</context:component-scan>
+	
+	<!-- 启用mvc注解 -->
+	<mvc:annotation-driven/>
+	
+	<!-- 放过静态资源 -->
+	<mvc:default-servlet-handler/>
+</beans>

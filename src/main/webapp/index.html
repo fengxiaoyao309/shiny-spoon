@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+
+	<style>
+	.search-box {
+		    margin: 10px 0;
+		    padding: 10px;
+		    display: flex;
+		    gap: 10px;
+		}
+		
+		.search-box input {
+		    padding: 8px;
+		    width: 200px;
+		    border: 1px solid #ddd;
+		    border-radius: 4px;
+		}
+		
+		.search-box button {
+		    padding: 8px 15px;
+		    background-color: #4CAF50;
+		    color: white;
+		    border: none;
+		    border-radius: 4px;
+		    cursor: pointer;
+		}
+		
+		.search-box button:hover {
+		    background-color: #45a049;
+		}
+	</style>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>君之源餐厅</title>
+		<link rel="shortcut icon" type="image/x-icon" href="images/logo.png" />
+		<link rel="stylesheet" type="text/css" href="css/index.css"/> 
+		 
+	</head>
+	<body>
+		<div class="head">
+			<p>君之源线上点餐系统</p>
+			<ul class="head_right">
+				   
+			</ul>
+		</div>
+		
+		<div id="userInfo" style="display:none;">
+	        <p>用户名: <span id="nickName"></span></p>
+	        <p>密码: <span id="password"></span></p>
+	        <p>电话: <span id="tel"></span></p>
+	        <p>性别: <span id="sex"></span></p>
+    	</div>
+    	
+    	
+		
+		<div class="article">
+			<div class="article_left">
+				 <ul class="left_nav">
+					<li><a class="p_type select" href="javascript:void(0);" onclick="find(0, this)">全部</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(1, this)">粤菜</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(2, this)">湘菜</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(3, this)">鲁菜</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(4, this)">浙江菜</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(5, this)">闽菜</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(6, this)">徽菜</a></li>
+					<li><a class="p_type" href="javascript:void(0);" onclick="find(7, this)">川菜</a></li>
+	
+				</ul>
+			</div>
+		
+			
+			
+			<div class="article_right">
+			    
+			    <ul class="p_list">
+			        <!-- 产品列表 -->
+			    </ul>
+			</div>
+		</div>
+		<div class="page">
+		 <ul id="pagination">
+		 
+			</ul>
+		</div>
+		<div class="foot">
+				<p>版权所有：湖南工学院-计算机科学与工程学院</p>
+		</div>
+		
+<script src="js/jquery-1.9.1.js"></script>
+<script>
+
+	function logout() {
+	    // 这里可以添加任何需要的清理逻辑，例如清除用户会话等
+	    window.location.href = 'login.html'; // 重定向到登录页面
+	}
+    $(function(){
+        // 查看类型
+        $.get("type/findAll", function(data) {
+            if(data.code == 600) {
+                alert(data.msg);
+            } else {
+                showTypes(data.data);
+            }
+        }, "json");
+
+        // 初始化加载第一页，tid 为0表示全部
+        loadPage(1, 0);
+
+        // 绑定分页控件的点击事件（初始化时不需要，因为在 loadPage 中已经绑定）
+    });
+
+    // 查看所有类别并展示
+    function showTypes(arr) {
+        if(arr.length < 1) {
+            return;
+        }
+        var str = '<li><a class="p_type select" href="javascript:find(0)">全部</a></li>';
+        for(var i = 0; i < arr.length; i++) {
+            str += '<li><a class="p_type" href="javascript:find('+arr[i].tno+')">'+arr[i].tname+'</a></li>';
+        }
+        
+        // 写入到 article_left
+        $('.article_left > .left_nav').html(str);
+    }
+
+    // 查找指定类型的产品
+    function find(tid, element) {
+    // 清除所有类别的选中状态
+    $('.p_type').removeClass('select');
+    
+    // 给当前点击的类别添加选中状态
+    $(element).addClass('select');
+    
+    
+ 	// 重置搜索框
+    $('#searchInput').val('');
+ 
+ 
+    // 加载第一页对应类型的产品
+    loadPage(1, tid);
+}
+
+
+    // 加载指定页的数据，并可根据类型过滤
+    function loadPage(page, tid) {
+        var data = { page: page, rows: 10 };
+        if(tid && tid !== 0){
+            data.type = tid; // 假设后端通过 'type' 参数来过滤产品
+        }
+
+        $.ajax({
+            url: '/shopping/product/products',
+            method: 'GET',
+            data: data,
+            success: function(response) {
+                // 更新产品列表
+                updateProductList(response.products);
+                // 更新分页控件
+                updatePagination(response.count, page, tid);
+            },
+            error: function() {
+                alert('加载数据时出错');
+            }
+        });
+    }
+
+    // 更新产品列表
+    function updateProductList(products) {
+        var productHtml = '';
+        $.each(products, function(index, product) {
+            productHtml += '<li>' +
+                '<img src="' + product.pics + '"/>' +
+                '<p class="p_name">' + product.pname + '</p>' +
+                '<p class="p_info">' +
+                '<span class="price">' + product.price + '</span>' +
+                '<a class="cart" href="javascript:void(0);" onclick="addCart(' + product.pno + ')"></a>' + // 使用pno作为ID
+                '</p>' +
+                '</li>';
+        });
+        $('.p_list').html(productHtml);
+    }
+
+    // 更新分页控件
+    function updatePagination(totalCount, currentPage, tid) {
+        var totalPages = Math.ceil(totalCount / 10); // 假设每页10条
+        var paginationHtml = '';
+        for (var i = 1; i <= totalPages; i++) {
+            paginationHtml += '<li><a href="javascript:void(0)" ' + 
+                              (i == currentPage ? 'class="active"' : '') + 
+                              '>' + i + '</a></li>';
+        }
+        $('#pagination').html(paginationHtml);
+
+        // 重新绑定点击事件，传递当前的类型编号
+        $('#pagination a').off('click').on('click', function() {
+            var page = $(this).text(); // 获取点击的页码
+            loadPage(page, tid);
+        });
+    }
+    
+    
+ // 添加搜索功能
+    function searchProducts() {
+        var searchText = $('#searchInput').val().toLowerCase();
+        var currentProducts = $('.p_list li');
+        
+        if (searchText.trim() === '') {
+            // 如果搜索框为空，显示所有商品
+            currentProducts.show();
+            return;
+        }
+
+        // 遍历所有商品
+        currentProducts.each(function() {
+            var productName = $(this).find('.p_name').text().toLowerCase();
+            if (productName.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+
+    // 添加实时搜索功能（输入时就开始搜索）
+    $(document).ready(function() {
+        $('#searchInput').on('input', function() {
+            searchProducts();
+        });
+
+        // 添加回车键搜索功能
+        $('#searchInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                searchProducts();
+            }
+        });
+    });
+    
+ // 搜索功能
+    function searchProducts() {
+        var searchText = $('#searchInput').val().toLowerCase();
+        var currentProducts = $('.p_list li');
+        
+        if (searchText.trim() === '') {
+            currentProducts.show();
+            return;
+        }
+
+        currentProducts.each(function() {
+            var productName = $(this).find('.p_name').text().toLowerCase();
+            if (productName.includes(searchText)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }
+ 
+ // 在文档加载完成后绑定事件
+    $(document).ready(function() {
+        // 实时搜索
+        $('#searchInput').on('input', function() {
+            searchProducts();
+        });
+
+        // 回车搜索
+        $('#searchInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                searchProducts();
+            }
+        });
+    });
+ 
+ 
+    function addCart(productId) {
+        // 从localStorage中获取购物车数据
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+        // 检查商品是否已经在购物车中
+        const cartItem = cartItems.find(item => item.id === productId);
+
+        if (cartItem) {
+            // 如果商品已在购物车中，增加数量
+            cartItem.quantity++;
+        } else {
+            // 如果商品不在购物车中，从后端获取商品列表
+            $.ajax({
+                url: '/shopping/product/products?page=1&rows=10', // 获取商品列表
+                method: 'GET',
+                success: function(response) {
+                    // 假设response.products是商品列表
+                    const product = response.products.find(item => item.pno === productId);
+                    if (product) {
+                        cartItems.push({ id: product.pno, name: product.pname, price: product.price, quantity: 1 });
+                        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                        alert(product.pname + ' 已添加到购物车！');
+                        updateTotal(); // 更新总价
+                    } else {
+                        alert('未找到商品信息');
+                    }
+                },
+                error: function() {
+                    alert('无法获取商品信息');
+                }
+            });
+        }
+    }
+
+
+
+ 
+ 
+</script>
+		

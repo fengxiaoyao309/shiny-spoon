@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>君之源餐厅管理员登录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .head {
+            background-color: #ff7f50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        .article {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .article_left img {
+            max-width: 100%;
+            max-height: 400px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .article_right {
+            max-width: 400px;
+            margin: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+        }
+        .btn {
+            background-color: #ff7f50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #e06b3c;
+        }
+        .foot {
+            text-align: center;
+            padding: 20px;
+            background-color: #e0e0e0;
+            font-size: 12px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="head">
+        <h1>君之源餐厅线上点餐管理员登录系统</h1>
+    </header>
+    <main class="article">
+        <div class="article_left">
+            <img src="images/bg.jpeg" alt="餐厅背景图">
+        </div>
+        <div class="article_right">
+            <form id="myform">
+                <label for="nickName">用户名:</label>
+                <input type="text" id="nickName" name="nickName" placeholder="请输入用户名或手机号" required>
+                
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                
+                <button type="submit" class="btn">登录</button>
+                <a href="#" style="text-align: center; margin-top: 10px; color: #ff7f50; text-decoration: underline;">忘记密码</a>
+                <div id="errorMessage" class="error"></div>
+            </form>
+        </div>
+    </main>
+    <footer class="foot">
+        <p>版权所有：湖南工学院-计算机科学与工程学院</p>
+    </footer>
+    <script>
+        document.getElementById('myform').addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止表单的默认提交行为
+
+            const username = document.getElementById('nickName').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (username === 'admin' && password === '123456') {
+                window.location.href = 'add.html'; // 跳转到add.html页面
+            } else {
+                errorMessage.textContent = '您没有权限登录';
+            }
+        });
+    </script>
+</body>
+</html>
